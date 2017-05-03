@@ -65,4 +65,4 @@ console.log(Object.prototype.__proto__); // null
 3. 函数的`prototype`不属于自身的原型链。
 4. 在原型对象(`prototype`)上定义方法和属性是为了被子类继承和调用。
 
-> 测试用代码可以在我的github上下载，我一直相信，自己动手去测试才是掌握知识点的最好方法。
+> 测试用代码可以在我的[github](https://github.com/zjhch123/js-study-prototype)上下载，我一直相信，自己动手去测试才是掌握知识点的最好方法。
