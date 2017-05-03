@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+
+</body>
+<script>
+// 通过new Function() 生成的都是函数对象，其他都是普通对象
+// a
+function func1() {}
+// b
+var func2 = function() {}
+// c
+var func3 = new Function()
+
+// a和b在创建的时候，JS会自动通过new Function()来创建对象，所以a，b，c都是通过new Function()创造的函数对象
+
+// o1
+var o1 = {}
+// o2
+var o2 = new Object();
+// o3
+var o3 = new func1();
+
+// o1, o2是使用对象字面量的形式创建的普通对象
+// o3不是通过new Function()的形式创建的对象，所以也是普通对象
+
+// 每当创建函数对象时，该对象中都会内置一些属性，其中包括prototype和__proto__。prototype即为原型对象
+// 其内记录着函数对象的一些属性和方法。
+// prototype对f1不可见。也就是说，f1在调用自身属性或方法时不会查找prototype内的属性和方法。如下：
+function f1() {}
+f1.prototype.foo = "bar";
+console.log(f1.prototype); // Object {foo: "bar", constructor: function}
+console.log(f1.foo); // undefined
+
+// prototype的主要作用是继承。prototype内定义的属性和方法都是留给自己的后代使用的。
+// 说到后代，就必须说说js中的原型链。此时，另一个属性__proto__就登场了。
+// __proto__的作用是保留父类的prototype对象。
+// js在使用new表达式创建对象时，会将父类的prototype赋值给新对象的__proto__。这样就形成了代代继承。
+var obj = new f1();
+console.log(obj.foo); // "bar"
+console.log(obj.__proto__); // Object {foo: "bar", constructor: function}
+console.log(obj.__proto__ == f1.prototype); // true
+
+// 现在我们知道，obj中的__proto__保存的是f1中的prototype。即创建出的普通对象的__proto__等于创建其的函数对象的原型。
+
+// 那么f1的prototype的__proto__又是什么呢？
+console.log(f1.prototype.__proto__ == Object.prototype); // true
+console.log(Object.prototype.__proto__); // null
+// 可以看出，f1的prototype的__proto__指向了Object的prototype，而Object的prototype的__proto__为null。
+// 可以通过以上示例画出一条非常清晰的链，此链即为 “原型链”。
+// ![原型链](https://image.hduzplus.xyz/image/1493822167096.png)
+// 在拥有这样一条原型链之后，当obj.foo执行时，会先查找自身是否有该属性，但不会查找prototype。如果没找到，则会沿着原型链依此去查找。
+// 在上例中，我们将foo定义在f1的prototype上，这是obj就在原型链上找到了这个属性并执行。
+
+// 总结：
+/*
+1. 原型链真正的形成靠的是__proto__而非prototype。js在执行对象方法时会查找对象自身是否有该方法，如果不存在，会在原型链上找而不会在自身的prototype上找。
+2. 如果__proto__改变则整条原型链都会发生改变，等于改变了对象的数据类型。
+3. 函数的prototype不属于自身的原型链。
+4. 在原型对象(prototype)上定义方法和属性是为了被子类继承和调用。
+*/
+</script>
+</html>
+
+
+
+
+
+
+
